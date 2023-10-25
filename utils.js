@@ -24,8 +24,9 @@ async function findSensorByElementId(elementId){
 }
 
 async function postToMQTT(link){
-    const sensor = await findSensorByElementId(link.elementId)
-    const topic = `${sensor.Station.userId}/${sensor.Station.gatewayId}/${link.elementId}/set`
+    console.log(link)
+    const sensor = await findSensorByElementId(link.set.elementId)
+    const topic = `${sensor.Station.userId}/${sensor.Station.gatewayId}/${link.set.elementId}/set`
     const postData = {
         method: "POST",
         headers: {
