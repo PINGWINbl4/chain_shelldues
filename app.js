@@ -14,12 +14,26 @@ app.post('/', async (req, res, next) => {
         let timer = 0
         const shelldue = req.body.shelldue
         for (let i = 0; i < shelldue.ShellduesChainLink.length; i++) {
-            timer+=i*500
+            timer+=i*50
             shelldue.ShellduesChainLink[i].action.timeout? 
                         timer+= shelldue.ShellduesChainLink[i].action.timeout*1000:""
             if(shelldue.ShellduesChainLink[i].action.set){
-                setTimeout(async() => {
+                setTimeout(async() => {    
+                    shelldue.stage = i
+                    utils.updateShelldue(shelldue)
                     await utils.postToMQTT(shelldue.ShellduesChainLink[i].action)
+                    const sensor = await utils.findSensorByElementId(shelldue.ShellduesChainLink[i].action.set.elementId)
+                    console.log(sensor)
+                    const toLog = {
+                        userId: shelldue.userId,
+                        stationId: sensor.stationId,
+                        sensorId: sensor.id,
+                        shelldueId: shelldue.id,
+                        sensorName: sensor.SensorSettings.name,
+                        shelldueName: shelldue.name,
+                        roomName: sensor.SensorSettings.Rooms.name
+                    }
+                    utils.writeToLog(toLog, 1)
                 },  timer);
             }
         }

@@ -18,7 +18,12 @@ async function findSensorByElementId(elementId){
             elementId:elementId
         },
         include:{
-            Station:true
+            Station:true,
+            SensorSettings:{
+                include:{
+                    Rooms:true
+                }
+            }
         }
     })
 }
@@ -45,7 +50,32 @@ async function postToMQTT(link){
         .catch(err => {throw new Error(err)})
 }
 
+async function writeToLog(data, code){
+    try{
+      const url = `http://${process.env.LOGGER_HOST || "localhost"}:${process.env.LOGGER_PORT || "5282"}/${code}` 
+      const postData = {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          data: data
+        })
+      }
+      console.log(postData)
+      await fetch(url, postData)
+      .then(console.log(`${data.shelldueName} change status. Log req sended.\n User with id:${data.userId} can see it soon`))
+      .catch(err => {throw new Error(err)})
+    }
+    catch(err){
+      console.log(err)
+    }
+}
+
 module.exports = {
     updateShelldue,
-    postToMQTT
+    postToMQTT,
+    writeToLog,
+    findSensorByElementId
 }
