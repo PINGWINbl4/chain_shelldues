@@ -42,8 +42,7 @@ app.post('/', async (req, res, next) => {
             }
         }
         shelldue.stage = 0
-        shelldue.shelldueType == "tip"? shelldue.executing = false:""
-        utils.updateShelldue(shelldue)
+        await utils.updateShelldue(shelldue)
         
     }
     catch(err){
