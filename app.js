@@ -22,9 +22,9 @@ app.post('/', async (req, res, next) => {
 
             if(shelldue.ShellduesChainLink[i].action.set){
                 setTimeout(async() => {    
+                    await utils.postToMQTT(shelldue.ShellduesChainLink[i].action)
                     shelldue.stage = i
                     utils.updateShelldue(shelldue)
-                    await utils.postToMQTT(shelldue.ShellduesChainLink[i].action)
                     const sensor = await utils.findSensorByElementId(shelldue.ShellduesChainLink[i].action.set.elementId)
                     console.log(sensor)
                     const toLog = {
@@ -36,6 +36,7 @@ app.post('/', async (req, res, next) => {
                         shelldueName: shelldue.name,
                         roomName: sensor.SensorSettings.Rooms.name
                     }
+                    console.log(toLog)
                     utils.writeToLog(toLog, 1)
                 },  timer);
             }
