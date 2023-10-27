@@ -13,10 +13,13 @@ app.post('/', async (req, res, next) => {
     try{
         let timer = 0
         const shelldue = req.body.shelldue
+        console.log(shelldue.ShellduesChainLink)
         for (let i = 0; i < shelldue.ShellduesChainLink.length; i++) {
-            timer+=i*50
+            timer += 50 //небольшой делей для синхронности поста в mqtt
+
             shelldue.ShellduesChainLink[i].action.timeout? 
-                        timer+= shelldue.ShellduesChainLink[i].action.timeout*1000:""
+                timer += shelldue.ShellduesChainLink[i].action.timeout*1000:"" //увеличение таймера, если юзер прописал таймаут
+
             if(shelldue.ShellduesChainLink[i].action.set){
                 setTimeout(async() => {    
                     shelldue.stage = i

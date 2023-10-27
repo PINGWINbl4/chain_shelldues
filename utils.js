@@ -7,7 +7,8 @@ async function updateShelldue(shelldue){
             id: shelldue.id
         },
         data: {
-            stage: shelldue.stage
+            stage: shelldue.stage,
+            executing: shelldue.executing
         }
     })
 }
